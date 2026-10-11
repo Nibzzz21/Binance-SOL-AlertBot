@@ -11,7 +11,7 @@ BINANCE_SECRET_KEY = os.getenv('BINANCE_SECRET_KEY')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-SYMBOLS = ['SOL/USDT', 'BTC/USDT', 'ETH/USDT']
+SYMBOLS = ['SOL/USDT:USDT', 'BTC/USDT:USDT', 'ETH/USDT:USDT']
 STATE_FILE = 'bot_state.json'
 
 def send_telegram(message):
@@ -112,9 +112,9 @@ def get_daily_structure_bias(exchange, symbol):
 
 def run_bot():
     # Initialize Binance publicly without API keys to bypass cloud/datacenter IP blocks
-    exchange = ccxt.binance({
+    exchange = ccxt.okx({
         'enableRateLimit': True,
-        'options': {'defaultType': 'spot'}
+        'options': {'defaultType': 'swap'}
     })
     
     state = load_state()
