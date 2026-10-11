@@ -24,10 +24,10 @@ jobs:
           pip install ccxt pandas numpy requests
 
       - name: Verify file location
-        run: ls -la .binance-sol-alertbot/bot.py
+        run: ls -la ./binance-sol-alertbot/bot.py
 
       - name: Run trading strategy script
-        run: python .binance-sol-alertbot/bot.py
+        run: python ./binance-sol-alertbot/bot.py
         env:
           BINANCE_API_KEY: ${{ secrets.BINANCE_API_KEY }}
           BINANCE_SECRET_KEY: ${{ secrets.BINANCE_SECRET_KEY }}
