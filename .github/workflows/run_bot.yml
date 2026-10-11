@@ -25,6 +25,7 @@ jobs:
 
       - name: Run trading strategy script
         run: python bot.py
+        working-directory: ${{ github.workspace }}
         env:
           BINANCE_API_KEY: ${{ secrets.BINANCE_API_KEY }}
           BINANCE_SECRET_KEY: ${{ secrets.BINANCE_SECRET_KEY }}
@@ -37,3 +38,4 @@ jobs:
           git config --global user.email 'actions@github.com'
           git add bot_state.json
           git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update bot state" && git push)
+        working-directory: ${{ github.workspace }}
