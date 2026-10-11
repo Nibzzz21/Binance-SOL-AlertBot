@@ -212,11 +212,21 @@ def run_bot():
                         else:
                             signal_msg = f"⚖️ *In Trade (Holding):* Price within range between previous high and low."
 
-            # Send Telegram Notification (omits unbroken levels completely)
-            msg = f"📊 *GitHub Alert: {symbol}*\n" \
-                  f"• Status: `{s_data['status']}`\n" \
-                  f"• Close: `${close:.2f}` | RSI: `{rsi:.1f}`{break_info}\n\n{signal_msg}"
-            send_telegram(msg)
+           # Only send Telegram notification if in trade, or if a signal/A++ setup triggered
+            should_send = False
+            if s_data['status'] == 'IN_TRADE':
+                should_send = True
+            elif is_applus_setup or (breakout_high and htf_bias == "BULLISH") or breakdown_low:
+                should_send = True
+
+            if should_send:
+                msg = f"📊 *GitHub Alert: {symbol}*\n" \
+                      f"• Status: `{s_data['status']}`\n" \
+                      f"• Daily Bias: `{htf_bias}`\n" \
+                      f"• Close: `${close:.2f}` | RSI: `{rsi:.1f}`{break_info}\n\n{signal_msg}"
+                send_telegram(msg)
+            else:
+                print(f"Skipping notification for {symbol}: In tracking mode with no active signal.")
 
         except Exception as e:
             send_telegram(f"⚠️ Error on {symbol}: {str(e)}")
