@@ -111,9 +111,8 @@ def get_daily_structure_bias(exchange, symbol):
         return "NEUTRAL"
 
 def run_bot():
+    # Initialize Binance publicly without API keys to bypass cloud/datacenter IP blocks
     exchange = ccxt.binance({
-        'apiKey': BINANCE_API_KEY,
-        'secret': BINANCE_SECRET_KEY,
         'enableRateLimit': True,
         'options': {'defaultType': 'spot'}
     })
