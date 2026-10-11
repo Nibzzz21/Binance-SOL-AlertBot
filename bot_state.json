@@ -7,5 +7,14 @@
     },
     "ETH_USDT": {
         "status": "TRACKING"
+    },
+    "SOL_USDT:USDT": {
+        "status": "TRACKING"
+    },
+    "BTC_USDT:USDT": {
+        "status": "TRACKING"
+    },
+    "ETH_USDT:USDT": {
+        "status": "TRACKING"
     }
 }
