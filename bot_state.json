@@ -1,0 +1,11 @@
+{
+    "SOL_USDT": {
+        "status": "TRACKING"
+    },
+    "BTC_USDT": {
+        "status": "TRACKING"
+    },
+    "ETH_USDT": {
+        "status": "TRACKING"
+    }
+}
