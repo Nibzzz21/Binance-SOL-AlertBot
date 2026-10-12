@@ -8,6 +8,8 @@ on:
 jobs:
   run-bot:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required for pushing state updates back to repo
 
     steps:
       - name: Checkout repository
@@ -38,5 +40,5 @@ jobs:
         run: |
           git config --global user.name 'GitHub Actions Bot'
           git config --global user.email 'actions@github.com'
-          git add bot_state.json
+          git add binance-sol-alertbot/bot_state.json
           git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update bot state" && git push)
