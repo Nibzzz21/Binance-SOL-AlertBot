@@ -43,7 +43,7 @@
         "key_level": 0.5111
     },
     "BNB_USDT_USDT": {
-        "status": "IN_TRADE",
+        "status": "TRACKING",
         "last_trend": "BEARISH",
         "key_level": 750.4
     }
