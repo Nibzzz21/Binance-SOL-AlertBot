@@ -6,12 +6,17 @@ import pandas as pd
 import requests
 
 # Load credentials securely from GitHub Environment Secrets
-BINANCE_API_KEY = os.getenv('BINANCE_API_KEY')
-BINANCE_SECRET_KEY = os.getenv('BINANCE_SECRET_KEY')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-SYMBOLS = ['SOL/USDT:USDT', 'BTC/USDT:USDT', 'ETH/USDT:USDT']
+SYMBOLS = [
+    'BTC/USDT:USDT', 
+    'ETH/USDT:USDT', 
+    'SOL/USDT:USDT', 
+    'ZEC/USDT:USDT', 
+    'ONDO/USDT:USDT', 
+    'BNB/USDT:USDT'
+]
 STATE_FILE = 'bot_state.json'
 
 def send_telegram(message):
@@ -59,36 +64,66 @@ def find_pivots(df, window=4):
 def get_linear_regression_trendline(df, pivot_type='low', num_pivots=3):
     col = 'swing_low' if pivot_type == 'low' else 'swing_high'
     pivots = df[df[col].notna()].copy()
-    
     if len(pivots) < num_pivots:
         return None
-        
     recent_pivots = pivots.tail(num_pivots)
     x = recent_pivots.index.values.astype(float)
     y = recent_pivots[col].values.astype(float)
-    
     slope, intercept = np.polyfit(x, y, 1)
     current_idx = float(len(df) - 1)
-    projected_value = (slope * current_idx) + intercept
+    return (slope * current_idx) + intercept
+
+def check_hidden_divergences(df):
+    pivots = df[df['swing_low'].notna() | df['swing_high'].notna()].tail(4)
+    if len(pivots) < 2:
+        return "None"
     
-    return projected_value
+    last_piv = pivots.iloc[-1]
+    prev_piv = pivots.iloc[-2]
+    
+    if not np.isnan(last_piv['swing_low']) and not np.isnan(prev_piv['swing_low']):
+        if last_piv['close'] > prev_piv['close'] and last_piv['rsi_14'] < prev_piv['rsi_14']:
+            return "Hidden Bullish Divergence 🟢"
+            
+    if not np.isnan(last_piv['swing_high']) and not np.isnan(prev_piv['swing_high']):
+        if last_piv['close'] < prev_piv['close'] and last_piv['rsi_14'] > prev_piv['rsi_14']:
+            return "Hidden Bearish Divergence 🔴"
+            
+    return "None"
+
+def analyze_15m_structure(df):
+    df_piv = df[df['swing_high'].notna() | df['swing_low'].notna()].copy()
+    highs = df_piv[df_piv['swing_high'].notna()]['swing_high'].tolist()
+    lows = df_piv[df_piv['swing_low'].notna()]['swing_low'].tolist()
+    
+    trend = "NEUTRAL"
+    key_level = 0.0
+    level_name = "N/A"
+    
+    if len(highs) >= 2 and len(lows) >= 2:
+        if highs[-1] > highs[-2] and lows[-1] > lows[-2]:
+            trend = "BULLISH"
+            key_level = lows[-1]
+            level_name = "Higher Low (HL)"
+        elif highs[-1] < highs[-2] and lows[-1] < lows[-2]:
+            trend = "BEARISH"
+            key_level = highs[-1]
+            level_name = "Lower High (LH)"
+            
+    return trend, key_level, level_name
 
 def check_candlestick_patterns(df):
     last = df.iloc[-1]
     prev = df.iloc[-2]
-    
     body = abs(last['close'] - last['open'])
     candle_range = last['high'] - last['low']
     
     is_engulfing = (last['close'] > last['open']) and (prev['close'] < prev['open']) and \
                    (last['close'] >= prev['open']) and (last['open'] <= prev['close'])
-                   
     lower_wick = min(last['open'], last['close']) - last['low']
     upper_wick = last['high'] - max(last['open'], last['close'])
     is_hammer = (lower_wick > (2 * body)) and (upper_wick < (0.5 * body)) and (candle_range > 0)
-    
     higher_close = last['close'] > prev['high']
-    
     return is_engulfing or is_hammer or higher_close
 
 def get_daily_structure_bias(exchange, symbol):
@@ -96,13 +131,10 @@ def get_daily_structure_bias(exchange, symbol):
         htf_data = exchange.fetch_ohlcv(symbol, timeframe='1d', limit=35)
         df = pd.DataFrame(htf_data, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
         df = df.iloc[:-1].copy()
-        
         df['sh'] = df['high'][(df['high'] > df['high'].shift(1)) & (df['high'] > df['high'].shift(-1))]
         df['sl'] = df['low'][(df['low'] < df['low'].shift(1)) & (df['low'] < df['low'].shift(-1))]
-        
         highs = df['sh'].dropna().tolist()
         lows = df['sl'].dropna().tolist()
-        
         if len(highs) >= 2 and len(lows) >= 2:
             if highs[-1] > highs[-2] and lows[-1] > lows[-2]:
                 return "BULLISH"
@@ -111,7 +143,6 @@ def get_daily_structure_bias(exchange, symbol):
         return "NEUTRAL"
 
 def run_bot():
-    # Initialize Binance publicly without API keys to bypass cloud/datacenter IP blocks
     exchange = ccxt.okx({
         'enableRateLimit': True,
         'options': {'defaultType': 'swap'}
@@ -121,18 +152,16 @@ def run_bot():
 
     for symbol in SYMBOLS:
         try:
-            sym_key = symbol.replace('/', '_')
+            sym_key = symbol.replace('/', '_').replace(':', '_')
             if sym_key not in state:
-                state[sym_key] = {'status': 'TRACKING'}
+                state[sym_key] = {'status': 'TRACKING', 'last_trend': 'NEUTRAL', 'key_level': 0.0}
 
             s_data = state[sym_key]
 
-            # 1. Daily HTF Bias & 15m Data
             htf_bias = get_daily_structure_bias(exchange, symbol)
             ltf_data = exchange.fetch_ohlcv(symbol, timeframe='15m', limit=70)
             df_ltf = pd.DataFrame(ltf_data, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
             
-            # CRUCIAL: Examine ONLY the most recent fully closed candle
             df_closed = df_ltf.iloc[:-1].copy()
             df_closed['ema_16'] = df_closed['close'].ewm(span=16).mean()
             df_closed['ema_50'] = df_closed['close'].ewm(span=50).mean()
@@ -141,6 +170,7 @@ def run_bot():
 
             df_closed = find_pivots(df_closed, window=4)
             proj_support = get_linear_regression_trendline(df_closed, pivot_type='low', num_pivots=3)
+            proj_resistance = get_linear_regression_trendline(df_closed, pivot_type='high', num_pivots=3)
 
             last_closed = df_closed.iloc[-1]
             prev_candle = df_closed.iloc[-2]
@@ -149,6 +179,9 @@ def run_bot():
             ema16 = last_closed['ema_16']
             ema50 = last_closed['ema_50']
             rsi = last_closed['rsi_14']
+            rsi_prev = df_closed.iloc[-2]['rsi_14']
+            rsi_slope = "Upward 📈" if rsi > rsi_prev else "Downward 📉"
+            hidden_div = check_hidden_divergences(df_closed)
             atr = last_closed['atr']
             vol = last_closed['volume']
             avg_vol_prev3 = df_closed['volume'].iloc[-4:-1].mean()
@@ -156,82 +189,82 @@ def run_bot():
             prev_high = prev_candle['high']
             prev_low = prev_candle['low']
 
-            # Trendline POI Zone Check
+            if close > prev_high:
+                candle_pos_msg = "Candle close is **Higher** than previous candle 🟢"
+            elif close < prev_low:
+                candle_pos_msg = "Candle close is **Lower** than previous candle 🔴"
+            else:
+                candle_pos_msg = "Candle close is **Within** previous candle range ⚖️"
+
+            ema_status = ""
+            ema_status += "• **Price vs 50 EMA:** Above 🟢\n" if close > ema50 else "• **Price vs 50 EMA:** Below 🔴\n"
+            ema_status += "• **Price vs 16 EMA:** Above 🟢" if close > ema16 else "• **Price vs 16 EMA:** Below 🔴"
+
+            poi_msg = "No immediate POI test"
             in_trendline_zone = False
-            if proj_support is not None:
-                tolerance = atr * 0.5
-                if abs(close - proj_support) <= tolerance:
-                    in_trendline_zone = True
+            if proj_support is not None and abs(close - proj_support) <= (atr * 0.5):
+                in_trendline_zone = True
+                poi_msg = f"Approached Support Trendline POI (~${proj_support:.2f}) 🎯"
+            elif proj_resistance is not None and abs(close - proj_resistance) <= (atr * 0.5):
+                poi_msg = f"Approached Resistance Trendline POI (~${proj_resistance:.2f}) 🎯"
+
+            current_15m_trend, key_lvl, lvl_name = analyze_15m_structure(df_closed)
+            choch_alert = ""
+            if s_data['last_trend'] != 'NEUTRAL' and current_15m_trend != s_data['last_trend']:
+                choch_alert = f"\n🚨 **CHoCH / TREND SHIFT!** Shifted from `{s_data['last_trend']}` to `{current_15m_trend}`."
+            s_data['last_trend'] = current_15m_trend
+            s_data['key_level'] = key_lvl
 
             pattern_confirmed = check_candlestick_patterns(df_closed)
             volume_confirmed = vol > avg_vol_prev3
             is_applus_setup = in_trendline_zone and pattern_confirmed and volume_confirmed
 
-            # Setup Quality Tier
-            if close > ema50 and close > ema16:
-                setup_quality = "A+ Setup 🟢 (Price above both EMAs)"
-            elif (ema16 < close < ema50) or (ema50 < close < ema16):
-                setup_quality = "Less Probable Setup ⚠️ (Price between EMAs)"
-            else:
-                setup_quality = "No Setup ❌ (Price below EMAs)"
-
-            signal_msg = ""
             breakout_high = close > prev_high
             breakdown_low = close < prev_low
 
-            # Build dynamic break details (Only shown if broken is True)
-            break_info = ""
-            if breakout_high:
-                break_info += f"\n• **Prev High Broken:** `${prev_high:.2f}`"
-            if breakdown_low:
-                break_info += f"\n• **Prev Low Broken:** `${prev_low:.2f}`"
+            signal_title = ""
+            signal_action = ""
+            is_actionable = False
 
-            if close < ema50 and close < ema16:
-                signal_msg = "⚠️ *No Setup:* Price below both EMAs. No trade."
-                s_data['status'] = 'TRACKING'
-            else:
-                if is_applus_setup:
-                    signal_msg = f"🔥 **A++ TRENDLINE POI SETUP**\n• **Action:** Buy **$5 USDT** on spot at market price.\n• **Trigger:** Projected Support Trendline hit + Pattern + Volume Surge."
+            if s_data['status'] == 'TRACKING':
+                if is_applus_setup or (breakout_high and htf_bias == "BULLISH"):
+                    signal_title = "🟢 **INITIAL BUY SIGNAL**"
+                    signal_action = "• **Action:** Enter Initial Spot Position."
                     s_data['status'] = 'IN_TRADE'
-                else:
-                    if s_data['status'] == 'TRACKING':
-                        if breakout_high and htf_bias == "BULLISH":
-                            signal_msg = f"🟢 *INITIAL BUY SIGNAL*\n• **Action:** Buy **$5 USDT** on spot at market price.\n• **Setup:** {setup_quality}"
-                            s_data['status'] = 'IN_TRADE'
-                        else:
-                            signal_msg = f"⏳ *Tracking Mode:*\n• Near Trendline POI: `{in_trendline_zone}`"
+                    is_actionable = True
+            elif s_data['status'] == 'IN_TRADE':
+                if breakdown_low:
+                    signal_title = "🔴 **EXIT SIGNAL**"
+                    signal_action = "• **Action:** Sell All / Exit Position. Previous low broken."
+                    s_data['status'] = 'TRACKING'
+                    is_actionable = True
+                elif breakout_high:
+                    signal_title = "🟢 **SCALE-IN BUY SIGNAL**"
+                    signal_action = "• **Action:** Scale-In (Add More Spot Position). Previous high broken."
+                    is_actionable = True
 
-                    elif s_data['status'] == 'IN_TRADE':
-                        # Explicit Exit Rule: Previous Low Broken
-                        if breakdown_low:
-                            signal_msg = f"🔴 *EXIT / SELL ALL SIGNAL*\n• **Action:** Sell all coins bought on the way up at market price.\n• **Reason:** Previous low broken. Reverting to tracking mode."
-                            s_data['status'] = 'TRACKING'
-                        # Scale-in Rule: Previous High Broken
-                        elif breakout_high:
-                            signal_msg = f"🟢 *SCALE-IN BUY SIGNAL*\n• **Action:** Buy **$5 USDT** more on spot at market price.\n• **Setup:** {setup_quality}"
-                        else:
-                            signal_msg = f"⚖️ *In Trade (Holding):* Price within range between previous high and low."
-
-           # Only send Telegram notification if in trade, or if a signal/A++ setup triggered
-            should_send = False
-            if s_data['status'] == 'IN_TRADE':
-                should_send = True
-            elif is_applus_setup or (breakout_high and htf_bias == "BULLISH") or breakdown_low:
-                should_send = True
-
-            if should_send:
-                msg = f"📊 *GitHub Alert: {symbol}*\n" \
-                      f"• Status: `{s_data['status']}`\n" \
-                      f"• Daily Bias: `{htf_bias}`\n" \
-                      f"• Close: `${close:.2f}` | RSI: `{rsi:.1f}`{break_info}\n\n{signal_msg}"
+            # ONLY send Telegram message if an actionable signal or structural shift occurs
+            if is_actionable or choch_alert != "":
+                msg = (
+                    f"📊 *15m Bot Alert: {symbol}*\n"
+                    f"• Status: `{s_data['status']}` | Bias: `{htf_bias}`\n"
+                    f"• Close: `${close:.2f}`\n"
+                    f"{candle_pos_msg}\n"
+                    f"{ema_status}\n"
+                    f"• **RSI (14):** `{rsi:.1f}` (Slope: {rsi_slope})\n"
+                    f"• **Divergence:** `{hidden_div}`\n"
+                    f"• **POI Status:** `{poi_msg}`\n"
+                    f"• **15m Structure:** `{current_15m_trend}` | Critical {lvl_name}: `${key_lvl:.2f}`{choch_alert}\n\n"
+                    f"{signal_title}\n{signal_action}"
+                )
                 send_telegram(msg)
             else:
-                print(f"Skipping notification for {symbol}: In tracking mode with no active signal.")
+                print(f"Skipping Telegram notification for {symbol}: Currently tracking with no trigger event.")
 
         except Exception as e:
             send_telegram(f"⚠️ Error on {symbol}: {str(e)}")
 
-    save_state(state)
+        save_state(state)
 
 if __name__ == '__main__':
     run_bot()
