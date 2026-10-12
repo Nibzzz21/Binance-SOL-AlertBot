@@ -40,5 +40,6 @@ jobs:
         run: |
           git config --global user.name 'GitHub Actions Bot'
           git config --global user.email 'actions@github.com'
-          git add bot_state.json binance-sol-alertbot/bot_state.json 2>/dev/null || true
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update bot state" && git push)
+          git add bot_state.json ./bot_state.json binance-sol-alertbot/bot_state.json 2>/dev/null || true
+          git commit -m "Auto-update bot state" || echo "No changes to commit"
+          git push || echo "Push skipped or failed"
