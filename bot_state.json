@@ -33,9 +33,9 @@
         "key_level": 107.46
     },
     "ZEC_USDT_USDT": {
-        "status": "TRACKING",
-        "last_trend": "NEUTRAL",
-        "key_level": 0.0
+        "status": "IN_TRADE",
+        "last_trend": "BEARISH",
+        "key_level": 1215.47
     },
     "ONDO_USDT_USDT": {
         "status": "TRACKING",
