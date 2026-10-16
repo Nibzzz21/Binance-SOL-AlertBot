@@ -18,7 +18,7 @@
         "status": "TRACKING"
     },
     "BTC_USDT_USDT": {
-        "status": "TRACKING",
+        "status": "IN_TRADE",
         "last_trend": "NEUTRAL",
         "key_level": 0.0
     },
@@ -28,7 +28,7 @@
         "key_level": 2443.68
     },
     "SOL_USDT_USDT": {
-        "status": "TRACKING",
+        "status": "IN_TRADE",
         "last_trend": "BULLISH",
         "key_level": 105.69
     },
