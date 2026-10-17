@@ -28,7 +28,7 @@
         "key_level": 2417.5
     },
     "SOL_USDT_USDT": {
-        "status": "IN_TRADE",
+        "status": "TRACKING",
         "last_trend": "BULLISH",
         "key_level": 104.12
     },
