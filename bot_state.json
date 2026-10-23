@@ -18,14 +18,14 @@
         "status": "TRACKING"
     },
     "BTC_USDT_USDT": {
-        "status": "TRACKING",
+        "status": "IN_TRADE",
         "last_trend": "BULLISH",
         "key_level": 81160.0
     },
     "ETH_USDT_USDT": {
         "status": "IN_TRADE",
         "last_trend": "BULLISH",
-        "key_level": 2376.5
+        "key_level": 2380.2
     },
     "SOL_USDT_USDT": {
         "status": "TRACKING",
