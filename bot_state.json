@@ -23,7 +23,7 @@
         "key_level": 81471.8
     },
     "ETH_USDT_USDT": {
-        "status": "IN_TRADE",
+        "status": "TRACKING",
         "last_trend": "BEARISH",
         "key_level": 2404.77
     },
@@ -43,7 +43,7 @@
         "key_level": 0.4282
     },
     "BNB_USDT_USDT": {
-        "status": "IN_TRADE",
+        "status": "TRACKING",
         "last_trend": "BEARISH",
         "key_level": 743.2
     }
