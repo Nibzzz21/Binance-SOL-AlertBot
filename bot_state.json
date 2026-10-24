@@ -25,7 +25,7 @@
     "ETH_USDT_USDT": {
         "status": "IN_TRADE",
         "last_trend": "BULLISH",
-        "key_level": 2368.44
+        "key_level": 2378.51
     },
     "SOL_USDT_USDT": {
         "status": "TRACKING",
@@ -45,6 +45,6 @@
     "BNB_USDT_USDT": {
         "status": "IN_TRADE",
         "last_trend": "BULLISH",
-        "key_level": 733.5
+        "key_level": 738.9
     }
 }
