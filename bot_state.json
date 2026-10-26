@@ -33,7 +33,7 @@
         "key_level": 101.06
     },
     "ZEC_USDT_USDT": {
-        "status": "IN_TRADE",
+        "status": "TRACKING",
         "last_trend": "BULLISH",
         "key_level": 1221.31
     },
