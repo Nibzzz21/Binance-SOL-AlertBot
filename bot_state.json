@@ -33,7 +33,7 @@
         "key_level": 0.0
     },
     "ZEC_USDT_USDT": {
-        "status": "IN_TRADE",
+        "status": "TRACKING",
         "last_trend": "NEUTRAL",
         "key_level": 0.0
     },
@@ -43,7 +43,7 @@
         "key_level": 0.4163
     },
     "BNB_USDT_USDT": {
-        "status": "IN_TRADE",
+        "status": "TRACKING",
         "last_trend": "NEUTRAL",
         "key_level": 0.0
     }
