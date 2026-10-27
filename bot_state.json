@@ -29,18 +29,18 @@
     },
     "SOL_USDT_USDT": {
         "status": "TRACKING",
-        "last_trend": "BEARISH",
-        "key_level": 100.81
+        "last_trend": "NEUTRAL",
+        "key_level": 0.0
     },
     "ZEC_USDT_USDT": {
         "status": "IN_TRADE",
-        "last_trend": "BEARISH",
-        "key_level": 1233.23
+        "last_trend": "NEUTRAL",
+        "key_level": 0.0
     },
     "ONDO_USDT_USDT": {
         "status": "TRACKING",
         "last_trend": "BEARISH",
-        "key_level": 0.419
+        "key_level": 0.4163
     },
     "BNB_USDT_USDT": {
         "status": "IN_TRADE",
