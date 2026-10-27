@@ -33,14 +33,14 @@
         "key_level": 0.0
     },
     "ZEC_USDT_USDT": {
-        "status": "IN_TRADE",
+        "status": "TRACKING",
         "last_trend": "BULLISH",
         "key_level": 1234.27
     },
     "ONDO_USDT_USDT": {
-        "status": "IN_TRADE",
-        "last_trend": "BULLISH",
-        "key_level": 0.4061
+        "status": "TRACKING",
+        "last_trend": "NEUTRAL",
+        "key_level": 0.0
     },
     "BNB_USDT_USDT": {
         "status": "TRACKING",
