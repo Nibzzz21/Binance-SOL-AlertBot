@@ -20,17 +20,17 @@
     "BTC_USDT_USDT": {
         "status": "IN_TRADE",
         "last_trend": "BULLISH",
-        "key_level": 80806.2
+        "key_level": 81320.5
     },
     "ETH_USDT_USDT": {
         "status": "IN_TRADE",
-        "last_trend": "NEUTRAL",
-        "key_level": 0.0
+        "last_trend": "BULLISH",
+        "key_level": 2365.01
     },
     "SOL_USDT_USDT": {
         "status": "TRACKING",
         "last_trend": "BULLISH",
-        "key_level": 101.73
+        "key_level": 102.42
     },
     "ZEC_USDT_USDT": {
         "status": "TRACKING",
