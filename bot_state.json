@@ -18,7 +18,7 @@
         "status": "TRACKING"
     },
     "BTC_USDT_USDT": {
-        "status": "IN_TRADE",
+        "status": "TRACKING",
         "last_trend": "BULLISH",
         "key_level": 81320.5
     },
