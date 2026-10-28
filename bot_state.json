@@ -19,18 +19,18 @@
     },
     "BTC_USDT_USDT": {
         "status": "IN_TRADE",
-        "last_trend": "NEUTRAL",
-        "key_level": 0.0
+        "last_trend": "BULLISH",
+        "key_level": 80593.2
     },
     "ETH_USDT_USDT": {
         "status": "IN_TRADE",
-        "last_trend": "NEUTRAL",
-        "key_level": 0.0
+        "last_trend": "BULLISH",
+        "key_level": 2340.0
     },
     "SOL_USDT_USDT": {
         "status": "IN_TRADE",
-        "last_trend": "NEUTRAL",
-        "key_level": 0.0
+        "last_trend": "BULLISH",
+        "key_level": 101.0
     },
     "ZEC_USDT_USDT": {
         "status": "IN_TRADE",
