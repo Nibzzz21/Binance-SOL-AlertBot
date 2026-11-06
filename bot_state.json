@@ -23,7 +23,7 @@
         "key_level": 75923.6
     },
     "ETH_USDT_USDT": {
-        "status": "TRACKING",
+        "status": "IN_TRADE",
         "last_trend": "BULLISH",
         "key_level": 2232.36
     },
@@ -43,8 +43,8 @@
         "key_level": 0.0
     },
     "BNB_USDT_USDT": {
-        "status": "TRACKING",
-        "last_trend": "NEUTRAL",
-        "key_level": 0.0
+        "status": "IN_TRADE",
+        "last_trend": "BULLISH",
+        "key_level": 692.68
     }
 }
