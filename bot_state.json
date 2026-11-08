@@ -29,8 +29,8 @@
     },
     "SOL_USDT_USDT": {
         "status": "TRACKING",
-        "last_trend": "NEUTRAL",
-        "key_level": 0.0
+        "last_trend": "BEARISH",
+        "key_level": 89.82
     },
     "ZEC_USDT_USDT": {
         "status": "TRACKING",
@@ -43,7 +43,7 @@
         "key_level": 0.363
     },
     "BNB_USDT_USDT": {
-        "status": "TRACKING",
+        "status": "IN_TRADE",
         "last_trend": "BEARISH",
         "key_level": 698.64
     }
