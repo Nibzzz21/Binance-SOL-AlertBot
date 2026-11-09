@@ -19,8 +19,8 @@
     },
     "BTC_USDT_USDT": {
         "status": "TRACKING",
-        "last_trend": "BEARISH",
-        "key_level": 74714.1
+        "last_trend": "NEUTRAL",
+        "key_level": 0.0
     },
     "ETH_USDT_USDT": {
         "status": "TRACKING",
@@ -44,7 +44,7 @@
     },
     "BNB_USDT_USDT": {
         "status": "IN_TRADE",
-        "last_trend": "BEARISH",
-        "key_level": 685.1
+        "last_trend": "NEUTRAL",
+        "key_level": 0.0
     }
 }
