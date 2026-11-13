@@ -25,12 +25,12 @@
     "ETH_USDT_USDT": {
         "status": "TRACKING",
         "last_trend": "BULLISH",
-        "key_level": 1926.66
+        "key_level": 1949.73
     },
     "SOL_USDT_USDT": {
         "status": "TRACKING",
-        "last_trend": "NEUTRAL",
-        "key_level": 0.0
+        "last_trend": "BULLISH",
+        "key_level": 80.49
     },
     "ZEC_USDT_USDT": {
         "status": "TRACKING",
@@ -39,8 +39,8 @@
     },
     "ONDO_USDT_USDT": {
         "status": "TRACKING",
-        "last_trend": "NEUTRAL",
-        "key_level": 0.0
+        "last_trend": "BULLISH",
+        "key_level": 0.3435
     },
     "BNB_USDT_USDT": {
         "status": "TRACKING",
