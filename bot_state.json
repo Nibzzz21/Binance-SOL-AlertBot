@@ -19,18 +19,18 @@
     },
     "BTC_USDT_USDT": {
         "status": "TRACKING",
-        "last_trend": "NEUTRAL",
-        "key_level": 0.0
+        "last_trend": "BEARISH",
+        "key_level": 64066.7
     },
     "ETH_USDT_USDT": {
         "status": "TRACKING",
         "last_trend": "BEARISH",
-        "key_level": 1832.34
+        "key_level": 1804.75
     },
     "SOL_USDT_USDT": {
         "status": "TRACKING",
-        "last_trend": "NEUTRAL",
-        "key_level": 0.0
+        "last_trend": "BEARISH",
+        "key_level": 72.93
     },
     "ZEC_USDT_USDT": {
         "status": "IN_TRADE",
@@ -39,12 +39,12 @@
     },
     "ONDO_USDT_USDT": {
         "status": "TRACKING",
-        "last_trend": "BULLISH",
-        "key_level": 0.2986
+        "last_trend": "NEUTRAL",
+        "key_level": 0.0
     },
     "BNB_USDT_USDT": {
         "status": "TRACKING",
         "last_trend": "BEARISH",
-        "key_level": 594.12
+        "key_level": 589.49
     }
 }
