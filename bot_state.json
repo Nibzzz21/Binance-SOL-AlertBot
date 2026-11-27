@@ -28,7 +28,7 @@
         "key_level": 0.0
     },
     "SOL_USDT_USDT": {
-        "status": "TRACKING",
+        "status": "IN_TRADE",
         "last_trend": "NEUTRAL",
         "key_level": 0.0
     },
@@ -38,9 +38,9 @@
         "key_level": 676.64
     },
     "ONDO_USDT_USDT": {
-        "status": "TRACKING",
+        "status": "IN_TRADE",
         "last_trend": "BULLISH",
-        "key_level": 0.2862
+        "key_level": 0.2918
     },
     "BNB_USDT_USDT": {
         "status": "TRACKING",
